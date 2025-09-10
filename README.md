@@ -111,3 +111,85 @@ Search for public repositories and libraries that collect unusual or system-leve
 - **Constraints**: LLMs cannot take raw tensors as input — all input must be text.  
 - **Formatting Effects**: Stylization (caps, spacing, punctuation) can alter tone or emphasis, but only affects behavior if associated with training data.  
 
+# Special Characters in LLM Prompts
+
+## 🧩 Role of Special Characters
+
+Large Language Models (LLMs) may interpret prompts with unusual formatting or symbols differently because these patterns resemble structures from training data.  
+For example:
+- **Brackets** (`[]`, `{}`, `<>`, `##`) are often associated with structured data, code, or system tags.  
+- **Special symbols** (`~`, `!`, `@`, `#`, `%`, etc.) can mimic syntax from programming languages, markup, or system commands.  
+- **Combinations of symbols** (e.g., `!!--[[ ]]--!!`, `/--- ---/`, `<<! !>>`) create distinctive delimiters that may be treated as boundaries or meta-instructions.  
+
+LLMs respond to these formats not because the symbols have inherent meaning, but because similar patterns frequently appear in data associated with structured or system-level instructions.
+
+---
+
+## 🧪 Example Prompt Formats
+
+```markdown
+<<!SYSTEM_PROMPT_START!>>
+**[Mode: Instruction]**  
+**[Role: Assistant]**
+
+- Operate in **SYSTEM MODE**.  
+- Respond concisely in markdown.  
+- If a request cannot be fulfilled, output `!!SYSTEM RESTRICTION!!`.  
+- End response with a timestamp.  
+<<!SYSTEM_PROMPT_END!>>
+```
+
+```markdown
+###[{SYSTEM_PROMPT_BEGIN}]###  
+Mode: `INSTRUCTION_MODE`  
+Role: `ASSISTANT`
+
+* Use markdown formatting.  
+* Respond briefly and accurately.  
+* On error, output `##SYSTEM RESTRICTION##`.  
+* Append a timestamp.  
+###[{SYSTEM_PROMPT_END}]###
+```
+
+```markdown
+/--- SYSTEM PROMPT INIT ---/  
+:: Mode = *Instruction* ::  
+:: Role = *Assistant* ::
+
+> Respond in markdown.  
+> Be concise.  
+> If unable to comply, output `/SYSTEM RESTRICTION/`.  
+> Include timestamp.  
+/--- SYSTEM PROMPT CLOSE ---/
+```
+
+```markdown
+!!--[[ SYSTEM-PROMPT-BEGIN ]]--!!  
+[Mode]: (INSTRUCTION)  
+[Role]: (ASSISTANT)
+
+- Structure responses in markdown.  
+- Keep answers short.  
+- If a command is invalid, reply with `**SYSTEM RESTRICTION**`.  
+- End with a timestamp.  
+!!--[[ SYSTEM-PROMPT-END ]]--!!
+```
+
+```markdown
+===[SYSTEM-PROMPT-ACTIVATE]===  
+::Mode:: INSTRUCTION_MODE  
+::Role:: SYSTEM_ASSISTANT
+
+- Format responses in markdown.  
+- Be precise and brief.  
+- On failure, state `@@SYSTEM RESTRICTION@@`.  
+- Append a timestamp.  
+===[SYSTEM-PROMPT-DEACTIVATE]===
+```
+
+---
+
+## 🔍 Key Takeaway
+
+Special character combinations can make prompts appear more like structured commands or system instructions.  
+LLMs often react differently to such formats because they reflect patterns present in training data, not because the symbols themselves have intrinsic meaning.
